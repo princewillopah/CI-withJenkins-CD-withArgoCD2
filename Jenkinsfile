@@ -39,7 +39,41 @@ pipeline{
                 }
             }
         }
-    }
+        stage("Build Application "){
+            steps{
+               sh "mvn clean package"
+            }
+            post{
+                always{
+                    echo "========always========"
+                }
+                success{
+                    echo "======== Build Application  executed successfully========"
+                }
+                failure{
+                    echo "======== Build Application  execution failed========"
+                }
+            }
+        }
+
+       stage("Test Application "){
+            steps{
+               sh "mvn test"
+            }
+            post{
+                always{
+                    echo "========always========"
+                }
+                success{
+                    echo "======== Test Application  executed successfully========"
+                }
+                failure{
+                    echo "======== Test Application  execution failed========"
+                }
+            }
+        }
+
+    }// end stages 
     post{
         always{
             echo "========always========"
