@@ -25,7 +25,7 @@ pipeline{
         }
         stage("Checkout From SCM"){
             steps{
-               git branch: 'master', credentialsId: 'Github-Credentials', url: 'https://github.com/princewillopah/CI-withJenkins-CD-withArgoCD'
+               git branch: 'master', credentialsId: 'Github-Credentials', url: 'https://github.com/princewillopah/reg-app-CI-withJenkins-CD-withArgoCD2'
             }
             post{
                 always{
