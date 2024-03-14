@@ -72,17 +72,26 @@ pipeline{
                 }
             }
         }
-
+       stage("SonarQube Analysis  "){
+            steps{
+                script {
+                    withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token'){ sh "mvn sonar:sonar"}
+                   
+                }
+              
+            }
+            post{
+                always{
+                    echo "========always========"
+                }
+                success{
+                    echo "======== Test Application  executed successfully========"
+                }
+                failure{
+                    echo "======== Test Application  execution failed========"
+                }
+            }
+        }
     }// end stages 
-    post{
-        always{
-            echo "========always========"
-        }
-        success{
-            echo "========pipeline executed successfully ========"
-        }
-        failure{
-            echo "========pipeline execution failed========"
-        }
-    }
-}
+
+}// end pipelines 
