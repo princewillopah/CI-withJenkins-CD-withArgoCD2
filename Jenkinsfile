@@ -92,6 +92,26 @@ pipeline{
                 }
             }
         }
+
+         stage("Quality Gate "){
+            steps{
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+                }
+              
+            }
+            post{
+                always{
+                    echo "========always========"
+                }
+                success{
+                    echo "======== Test Application  executed successfully========"
+                }
+                failure{
+                    echo "======== Test Application  execution failed========"
+                }
+            }
+        }
     }// end stages 
 
 }// end pipelines 
