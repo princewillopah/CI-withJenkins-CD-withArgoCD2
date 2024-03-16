@@ -93,38 +93,38 @@ pipeline{
             }
         }
 
-                stage("Quality Gate") {
-                    steps {
-                    //  script {
-                    //       waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
-                    //    }
+        //         stage("Quality Gate") {
+        //             steps {
+        //             //  script {
+        //             //       waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+        //             //    }
 
-                        script {
-                            def qg = waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
-                            if (qg.status == 'OK') {
-                                echo 'Quality Gate passed - SonarQube analysis successful'
-                            } else if (qg.status == 'ERROR') {
-                                echo 'Quality Gate failed - SonarQube analysis did not meet the criteria'
-                                // You can perform additional actions here if needed
-                            } else {
-                                echo "Quality Gate status is '${qg.status}', waiting for completion"
-                                // You can choose to wait or proceed with other actions based on the status
-                            }
-                        }
-                    }
+        //                 script {
+        //                     def qg = waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+        //                     if (qg.status == 'OK') {
+        //                         echo 'Quality Gate passed - SonarQube analysis successful'
+        //                     } else if (qg.status == 'ERROR') {
+        //                         echo 'Quality Gate failed - SonarQube analysis did not meet the criteria'
+        //                         // You can perform additional actions here if needed
+        //                     } else {
+        //                         echo "Quality Gate status is '${qg.status}', waiting for completion"
+        //                         // You can choose to wait or proceed with other actions based on the status
+        //                     }
+        //                 }
+        //             }
                 
-            post{
-                always{
-                    echo "========always========"
-                }
-                success{
-                    echo "======== Test Application  executed successfully========"
-                }
-                failure{
-                    echo "======== Test Application  execution failed========"
-                }
-            }
-        }
+        //     post{
+        //         always{
+        //             echo "========always========"
+        //         }
+        //         success{
+        //             echo "======== Test Application  executed successfully========"
+        //         }
+        //         failure{
+        //             echo "======== Test Application  execution failed========"
+        //         }
+        //     }
+        // }
     }// end stages 
 
 }// end pipelines 
