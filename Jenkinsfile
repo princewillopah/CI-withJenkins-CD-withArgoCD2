@@ -6,6 +6,14 @@ pipeline{
         jdk 'Java17'
         maven 'maven3'
     }
+    environment{
+        APP_NAME = "registration-app-pipeline"
+        RELEASE = "1.0.0"
+        DOCKER_USER = "princewillopah"
+        DOCKER_PASS = "DockerHub-credential-for-Jenkins"
+        IMAGE_NAME = "${DOCKER_USER}"+"/"+"{APP_NAME}"
+        IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+    }
     stages{
         stage("Cleanup Workspace"){
             steps{
@@ -125,6 +133,30 @@ pipeline{
         //         }
         //     }
         // }
+       stage("Build & Push Docker Image "){
+            steps{
+                script {
+                   docker.withRegistry(', DOCKER_PASS'){ docker_image = docker.build "${IMAGE_NAME}"}
+                   docker.withRegistry(', DOCKER_PASS'){ 
+                                                    docker_image.push("${IMAGE_NAME}")
+                                                    docker_image.push('latest')
+                                                    }
+                }
+              
+            }
+            post{
+                always{
+                    echo "========always========"
+                }
+                success{
+                    echo "======== Test Application  executed successfully========"
+                }
+                failure{
+                    echo "======== Test Application  execution failed========"
+                }
+            }
+        }
+
     }// end stages 
 
 }// end pipelines 
