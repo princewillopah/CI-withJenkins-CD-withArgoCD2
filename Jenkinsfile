@@ -80,12 +80,5 @@ pipeline{
 
             }
        }//Trigger CD Pipeline
-       stage("Print Image Tag") {
-            steps {
-                script {
-                echo "IMAGE_TAG: ${env.IMAGE_TAG}"
-                }
-            }
-            }
     }// end stages
 }// end pipelines 
