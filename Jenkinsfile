@@ -13,30 +13,30 @@ pipeline{
         DOCKER_PASS = "DockerHub-credential-for-Jenkins"
         IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-        // JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
+        JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
     }
     stages{
         stage("Cleanup Workspace"){
             steps{
                 cleanWs()
             }
-        }
+        }//Cleanup Workspace
         stage("Checkout From SCM"){
             steps{
                git branch: 'master', credentialsId: 'Github-Credentials', url: 'https://github.com/princewillopah/reg-app-CI-withJenkins-CD-withArgoCD2'
             }
-        }
+        }//Checkout From SCM
         stage("Build Application "){
             steps{
                sh "mvn clean package"
             }
-        }
+        }//Build Application 
 
        stage("Test Application "){
             steps{
                sh "mvn test"
             }
-        }
+        }//Test Application
        stage("SonarQube Analysis  "){
             steps{
                 script {
@@ -45,32 +45,18 @@ pipeline{
                 }
               
             }
-        }
-
+        }//SonarQube Analysis 
        stage("Build & Push Docker Image "){
             steps{
                 script {
                    docker.withRegistry('', DOCKER_PASS){ docker_image = docker.build "${IMAGE_NAME}"}
                    docker.withRegistry('', DOCKER_PASS){ 
-                                                    docker_image.push("${IMAGE_TAG}")
-                                                    docker_image.push('latest')
-                                                    }
-                }//script
-
-
-              
+                    docker_image.push("${IMAGE_TAG}")
+                    docker_image.push('latest')
+                    }
+                }//script 
             }// steps
         }// Build & Push Docker Image 
-
-
-   stage("Trivy Scan") {
-           steps {
-               script {
-	            sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image princewillopah/register-app-pipeline:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
-               }
-           }
-       }//
-
        stage ('Cleanup Artifacts') {// this will clear previously created artifacts(docker-image) from workplace 
            steps {
                script {
@@ -78,29 +64,13 @@ pipeline{
                     sh "docker rmi ${IMAGE_NAME}:latest"
                }
           }
-       }//
-
-    //    stage("Trigger CD Pipeline") {
-    //         steps {
-    //             script {
-    //                 sh "curl -v -k --user clouduser:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-13-232-128-192.ap-south-1.compute.amazonaws.com:8080/job/gitops-register-app-cd/buildWithParameters?token=gitops-token'"
-    //             }
-    //         }
-    //    }//
-
+       }//Cleanup Artifacts
+       stage("Trigger CD Pipeline") {
+            steps {
+                script {
+                    sh "curl -v -k --user admin:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-13-51-159-78.eu-north-1.compute.amazonaws.com:8080/job/reg-app-gitops/buildWithParameters?token=gitops-token'"
+                }
+            }
+       }//Trigger CD Pipeline
     }// end stages
-
-//     post {
-//        failure {
-//              emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
-//                       subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
-//                       mimeType: 'text/html',to: "ashfaque.s510@gmail.com"
-//       }
-//       success {
-//             emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
-//                      subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful", 
-//                      mimeType: 'text/html',to: "ashfaque.s510@gmail.com"
-//       }      
-//    }// end
-
 }// end pipelines 
