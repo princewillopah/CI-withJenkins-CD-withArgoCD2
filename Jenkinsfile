@@ -65,7 +65,7 @@ pipeline{
                }
           }
        }//Cleanup Artifacts
-       stage("Trigger GitOps CD Pipeline") {
+       stage("Trigger GitOps CD Pipeline!") {
             steps {
 
                 script {
