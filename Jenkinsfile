@@ -65,7 +65,7 @@ pipeline{
                }
           }
        }//Cleanup Artifacts
-       stage("Trigger CD Pipeline") {
+       stage("Trigger GitOps CD Pipeline") {
             steps {
                 script {
                     sh "curl -v -k --user admin:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-13-51-159-78.eu-north-1.compute.amazonaws.com:8080/job/reg-app-gitops/buildWithParameters?token=gitops-token'"
