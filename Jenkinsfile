@@ -26,7 +26,7 @@ pipeline{
                git branch: 'master', credentialsId: 'Github-Credentials', url: 'https://github.com/princewillopah/reg-app-CI-withJenkins-CD-withArgoCD2'
             }
         }//Checkout From SCM
-        stage("Build Application "){
+        stage("Build Application! "){
             steps{
                sh "mvn clean package"
             }
